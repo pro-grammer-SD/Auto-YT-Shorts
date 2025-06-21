@@ -3,54 +3,73 @@ import re
 from moviepy import (
     ImageClip, AudioFileClip, CompositeVideoClip, TextClip, concatenate_videoclips
 )
+from rich.console import Console
+from rich.progress import track
+from utils.roqe import retry_on_quota_error
 
-media_path = Path().cwd()
-audio_path = media_path / "media" / "audio"
-image_path = media_path / "media" / "images"
-font_path = media_path / "fonts" / "font.otf"
+console = Console()
 
-audio_indices = {
-    int(re.search(r"output_(\d+).mp3", f.name).group(1))
-    for f in audio_path.glob("output_*.mp3")
-    if re.search(r"output_(\d+).mp3", f.name)
-}
+@retry_on_quota_error
+def make_video(subtitle_text, overwrite=False):
+    root_dir = Path().resolve()
+    media_path = root_dir / "media"
+    audio_path = media_path / "audio"
+    image_path = media_path / "images"
+    video_path = media_path / "video"
+    output_path = root_dir / "output"
 
-image_indices = {
-    int(re.search(r"image_(\d+).png", f.name).group(1))
-    for f in image_path.glob("image_*.png")
-    if re.search(r"image_(\d+).png", f.name)
-}
+    font_path = root_dir / "fonts" / "font.otf"
 
-print("Audio found:", sorted(audio_indices))
-print("Image found:", sorted(image_indices))
-common_indices = sorted(audio_indices & image_indices)
+    video_path.mkdir(parents=True, exist_ok=True)
+    output_path.mkdir(parents=True, exist_ok=True)
 
-if not common_indices:
-    raise RuntimeError("No matching audio/image pairs found.")
+    audio_indices = {
+        int(re.search(r"output_(\d+)\.mp3", f.name).group(1))
+        for f in audio_path.glob("output_*.mp3")
+        if re.search(r"output_(\d+)\.mp3", f.name)
+    }
 
-clips = []
+    image_indices = {
+        int(re.search(r"image_(\d+)\.png", f.name).group(1))
+        for f in image_path.glob("image_*.png")
+        if re.search(r"image_(\d+)\.png", f.name)
+    }
 
-for i in common_indices:
-    audio_file = audio_path / f"output_{i}.mp3"
-    image_file = image_path / f"image_{i}.png"
+    common_indices = sorted(audio_indices & image_indices)
+    if not common_indices:
+        console.print("[bold red]❌ No matching audio/image pairs found.[/bold red]")
+        return False
 
-    print(f"Using image_{i}.png + output_{i}.mp3")
+    clips = []
+    for i in track(common_indices, description="🎞️ Creating video clips"):
+        audio = AudioFileClip(str(audio_path / f"output_{i}.mp3"))
+        img = ImageClip(str(image_path / f"image_{i}.png")).with_resize(height=1920)
+        img = img.with_on_color(size=(1080, 1920), color=(0, 0, 0), pos="center")
+        img = img.with_audio(audio).with_duration(audio.duration)
 
-    audio = AudioFileClip(str(audio_file))
-    image = ImageClip(str(image_file)).with_duration(audio.duration).with_audio(audio)
-    image = image.resized(height=1920).with_position("center").resized(width=1080)
+        subtitle = TextClip(
+            txt=subtitle_text,
+            font=str(font_path),
+            fontsize=60,
+            color="white",
+            method="caption",
+            size=(1000, None)
+        ).with_duration(audio.duration).with_position(("center", "bottom"))
 
-    subtitle = TextClip(
-        text=f"Clip {i}",
-        font=str(font_path),
-        color="white",
-        bg_color="black",
-        size=(1080, None),
-        method="label",
-    ).with_position(("center", "bottom")).with_duration(audio.duration)
-    
-    video = CompositeVideoClip([image, subtitle], size=(1080, 1920))
-    clips.append(video)
+        clip = CompositeVideoClip([img, subtitle], size=(1080, 1920))
+        clip_path = video_path / f"clip_{i}.mp4"
+        clip.write_videofile(str(clip_path), fps=30, audio_codec="aac", threads=4, preset="ultrafast", verbose=False, logger=None)
 
-final_video = concatenate_videoclips(clips, method="compose")
-final_video.write_videofile("final_video.mp4", fps=50, audio_codec="aac")
+        clips.append(clip)
+
+    final_path = output_path / "final_video.mp4"
+    if final_path.exists() and not overwrite:
+        console.print(f"[yellow]⚠️ Output already exists: {final_path}. Skipping final merge.[/yellow]")
+        return False
+
+    final = concatenate_videoclips(clips, method="compose")
+    console.print(f"[blue]📽️ Merging {len(clips)} clips into final video...[/blue]")
+    final.write_videofile(str(final_path), fps=30, audio_codec="aac", threads=4, preset="ultrafast")
+    console.print(f"[bold green]✅ Final video saved to: {final_path}[/bold green]")
+
+    return True

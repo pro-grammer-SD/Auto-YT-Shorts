@@ -3,9 +3,11 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 import ast
+from utils.roqe import retry_on_quota_error
 
 load_dotenv()
 
+@retry_on_quota_error
 def make_text(topic):
     client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
