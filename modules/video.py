@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import re
 from moviepy import (
@@ -62,7 +63,7 @@ def make_video(subtitle_text="Clip", overwrite=False):
         except Exception as e:
             console.print(f"[red]Error on clip {i} → {e}[/red]")
 
-    final_path = output_path / "test_final_video.mp4"
+    final_path = output_path / "final_video.mp4"
     if final_path.exists() and not overwrite:
         console.print(f"[yellow]⚠️ Output already exists: {final_path}. Skipping final merge.[/yellow]")
         return
@@ -70,7 +71,8 @@ def make_video(subtitle_text="Clip", overwrite=False):
     if clips:
         final = concatenate_videoclips(clips, method="compose")
         final.write_videofile(str(final_path), fps=30, audio_codec="aac", threads=4, preset="ultrafast")
-        console.print(f"[green]✅ Test final video saved at {final_path}[/green]")
+        console.print(f"[green]✅Final video saved at {final_path}. Opening it...[/green]")
+        os.startfile(final_path)
     else:
         console.print("[red]❌ No clips were created.[/red]")
 
