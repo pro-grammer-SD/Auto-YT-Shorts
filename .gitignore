@@ -2,13 +2,13 @@
 **/__pycache__/
 
 # Ignore the entire tests directory
-tests/
+**/tests/
 
 # Ignore the entire media directory
-media/
+**/media/
 
 # Ignore the entire output directory
-output/
+**/output/
 
 # Ignore .env files anywhere
 **/.env
