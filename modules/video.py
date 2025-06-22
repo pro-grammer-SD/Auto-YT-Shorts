@@ -34,9 +34,6 @@ def make_video(subtitle_text="Clip", overwrite=False):
         if re.search(r"image_(\d+)\.png", f.name)
     }
     
-    print(sorted(audio_path.glob("output_*.mp3")))
-    print(sorted(image_path.glob("image_*.png")))
-
     common_indices = sorted(audio_indices & image_indices)
     if not common_indices:
         console.print("[bold red]❌ No matching audio/image pairs found.[/bold red]")
