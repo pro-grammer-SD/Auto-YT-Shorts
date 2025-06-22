@@ -1,11 +1,11 @@
 # Ignoring `__pycache__`
-.__pycache__
+__pycache__/
 
 # And `tests` also
-.tests
+tests/
 
 # Ignore self-made `media`
-.__media__
+media/
 
 # Ignore the `.env`
 .env
