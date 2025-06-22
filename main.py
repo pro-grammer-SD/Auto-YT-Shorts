@@ -9,7 +9,6 @@ from modules.audio import make_audio
 from modules.image import make_image
 from modules.text import make_text
 from modules.video import make_video
-from utils.roqe import retry_on_quota_error
 
 console = Console()
 
@@ -95,7 +94,6 @@ def main():
     if not images_ready and not args.forcerender:
         build_images(lines)
 
-    video_file = Path("video") / "clip_1.mp4"
     final_output = Path("..") / "output" / "final_video.mp4"
 
     if final_output.exists() and not args.overwrite:

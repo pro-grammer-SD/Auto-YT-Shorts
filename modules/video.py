@@ -5,13 +5,13 @@ from moviepy import (
 )
 from rich.console import Console
 from rich.progress import track
-from utils.roqe import retry_on_quota_error
 
 console = Console()
 
-@retry_on_quota_error
-def make_video(subtitle_text, overwrite=False):
-    root_dir = Path().resolve()
+def make_video(subtitle_text="Clip", overwrite=False):
+    root_dir = Path(__file__).resolve().parent
+    if Path("audio").exists() and Path("images").exists():
+        root_dir = Path.cwd().parent
     media_path = root_dir / "media"
     audio_path = media_path / "audio"
     image_path = media_path / "images"
@@ -33,42 +33,49 @@ def make_video(subtitle_text, overwrite=False):
         for f in image_path.glob("image_*.png")
         if re.search(r"image_(\d+)\.png", f.name)
     }
+    
+    print(sorted(audio_path.glob("output_*.mp3")))
+    print(sorted(image_path.glob("image_*.png")))
 
     common_indices = sorted(audio_indices & image_indices)
     if not common_indices:
         console.print("[bold red]❌ No matching audio/image pairs found.[/bold red]")
-        return False
+        return
 
     clips = []
-    for i in track(common_indices, description="🎞️ Creating video clips"):
-        audio = AudioFileClip(str(audio_path / f"output_{i}.mp3"))
-        img = ImageClip(str(image_path / f"image_{i}.png")).with_resize(height=1920)
-        img = img.with_on_color(size=(1080, 1920), color=(0, 0, 0), pos="center")
-        img = img.with_audio(audio).with_duration(audio.duration)
+    for i in track(common_indices, description="🎞️ Creating test clips"):
+        try:
+            audio = AudioFileClip(str(audio_path / f"output_{i}.mp3"))
+            img = ImageClip(str(image_path / f"image_{i}.png")).resized(height=1920)
+            img = img.with_background_color(size=(1080, 1920), color=(0, 0, 0), pos="center")
+            img = img.with_audio(audio).with_duration(audio.duration)
 
-        subtitle = TextClip(
-            txt=subtitle_text,
-            font=str(font_path),
-            fontsize=60,
-            color="white",
-            method="caption",
-            size=(1000, None)
-        ).with_duration(audio.duration).with_position(("center", "bottom"))
+            subtitle = TextClip(
+                text=f"{subtitle_text} {i}",
+                font=str(font_path),
+                font_size=60,
+                color="white",
+                method="caption",
+                size=(1000, None)
+            ).with_duration(audio.duration).with_position(("center", "bottom"))
+            
+            clip = CompositeVideoClip([img, subtitle], size=(1080, 1920))
+            clip.write_videofile(str(video_path / f"clip_{i}.mp4"), fps=30, audio_codec="aac", threads=4, preset="ultrafast", logger=None)
+            clips.append(clip)
+        except Exception as e:
+            console.print(f"[red]Error on clip {i} → {e}[/red]")
 
-        clip = CompositeVideoClip([img, subtitle], size=(1080, 1920))
-        clip_path = video_path / f"clip_{i}.mp4"
-        clip.write_videofile(str(clip_path), fps=30, audio_codec="aac", threads=4, preset="ultrafast", verbose=False, logger=None)
-
-        clips.append(clip)
-
-    final_path = output_path / "final_video.mp4"
+    final_path = output_path / "test_final_video.mp4"
     if final_path.exists() and not overwrite:
         console.print(f"[yellow]⚠️ Output already exists: {final_path}. Skipping final merge.[/yellow]")
-        return False
+        return
 
-    final = concatenate_videoclips(clips, method="compose")
-    console.print(f"[blue]📽️ Merging {len(clips)} clips into final video...[/blue]")
-    final.write_videofile(str(final_path), fps=30, audio_codec="aac", threads=4, preset="ultrafast")
-    console.print(f"[bold green]✅ Final video saved to: {final_path}[/bold green]")
+    if clips:
+        final = concatenate_videoclips(clips, method="compose")
+        final.write_videofile(str(final_path), fps=30, audio_codec="aac", threads=4, preset="ultrafast")
+        console.print(f"[green]✅ Test final video saved at {final_path}[/green]")
+    else:
+        console.print("[red]❌ No clips were created.[/red]")
 
-    return True
+if __name__ == "__main__":
+    make_video()

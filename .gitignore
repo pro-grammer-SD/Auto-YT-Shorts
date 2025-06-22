@@ -1,11 +1,14 @@
-# Ignoring `__pycache__`
-__pycache__/
+# Ignore all __pycache__ folders recursively
+**/__pycache__/
 
-# And `tests` also
+# Ignore the entire tests directory
 tests/
 
-# Ignore self-made `media`
+# Ignore the entire media directory
 media/
 
-# Ignore the `.env`
-.env
+# Ignore the entire output directory
+output/
+
+# Ignore .env files anywhere
+**/.env
