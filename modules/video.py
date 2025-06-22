@@ -17,7 +17,6 @@ def make_video(subtitle_text, overwrite=False):
     image_path = media_path / "images"
     video_path = media_path / "video"
     output_path = root_dir / "output"
-
     font_path = root_dir / "fonts" / "font.otf"
 
     video_path.mkdir(parents=True, exist_ok=True)

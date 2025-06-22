@@ -2,7 +2,7 @@
 .__pycache__
 
 # And `tests` also
-.__tests__
+.tests
 
 # Ignore self-made `media`
 .__media__

@@ -15,5 +15,4 @@
     - `python-dotenv==1.1.0`
 
     - Or run `automate.bat` under `/deps` for the Python dependencies.
-
------------------------[Next (USAGE) >](USAGE.md)   ------------------------------
+    
