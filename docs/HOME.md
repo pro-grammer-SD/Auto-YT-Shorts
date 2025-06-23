@@ -2,17 +2,16 @@
 
 - ## ⚛️ Requirements
 
-    🧑 Others
+    - 🧑 Others
+        - `ffmpeg`
+        - `ImageMagick`
 
-    - `ffmpeg`
-    - `ImageMagick`
-
-    🐍 Python
-    - `elevenlabs==2.4.0`
-    - `moviepy==2.1.2`
-    - `Pillow==11.2.1`
-    - `protobuf==6.31.1`
-    - `python-dotenv==1.1.0`
+    - 🐍 Python
+        - `elevenlabs==2.4.0`
+        - `moviepy==2.1.2`
+        - `Pillow==11.2.1`
+        - `protobuf==6.31.1`
+        - `python-dotenv==1.1.0`
 
     - 🚀 Or run `automate.bat` under `/deps` for the Python dependencies.
     
