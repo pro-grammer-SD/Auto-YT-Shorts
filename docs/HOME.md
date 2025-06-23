@@ -1,5 +1,11 @@
 # 🏡 Welcome to the Auto-YT-Shorts Wiki! | Home
 
+- ## 🧑‍🤝‍🧑 Clone this repo first
+    ```
+    git clone https://github.com/pro-grammer-SD/Auto-YT-Shorts.git
+    cd Auto-YT-Shorts
+    ```
+
 - ## ⚛️ Requirements
 
     - 🧑 Others
