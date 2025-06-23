@@ -1,5 +1,0 @@
-elevenlabs==2.4.0
-moviepy==2.1.2
-Pillow==11.2.1
-protobuf==6.31.1
-python-dotenv==1.1.0
