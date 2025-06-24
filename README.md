@@ -1,5 +1,5 @@
 # About
-A **COOL** TOOL to make ```YouTube Shorts``` by harnessing the power of
+A **COOL** TOOL to make `YouTube Shorts` by harnessing the power of
 [![Typing SVG](https://readme-typing-svg.demolab.com?font=Inter&pause=1000&width=435&lines=Artificial+Intelligence+🤖)](https://git.io/typing-svg)
 
 # Repo Stats
