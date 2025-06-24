@@ -49,7 +49,7 @@ def make_video(subtitle_text="Clip", overwrite=False):
             img = img.with_audio(audio).with_duration(audio.duration)
 
             subtitle = TextClip(
-                text=subtitle_text,
+                text=f"{subtitle_text} {i}",
                 font=str(font_path),
                 font_size=60,
                 color="white",

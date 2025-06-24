@@ -117,8 +117,7 @@ def main():
 
         if matched:
             console.print("[bold green]🎬 Rendering final video...[/bold green]")
-            subtitle_text = "\n".join(lines)
-            success = make_video(subtitle_text=subtitle_text, overwrite=args.overwrite)
+            success = make_video(subtitle_text=topic, overwrite=args.overwrite)
             if success:
                 console.print("[bold green]✅ Build successful![/bold green]")
             else:
