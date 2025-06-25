@@ -41,7 +41,7 @@ def make_video(subtitle_text="Clip", overwrite=False):
         return
 
     clips = []
-    for i in track(common_indices, description="🎞️ Creating test clips"):
+    for i in track(common_indices, description="🎞️ Creating clips..."):
         try:
             audio = AudioFileClip(str(audio_path / f"output_{i}.mp3"))
             img = ImageClip(str(image_path / f"image_{i}.png")).resized(height=1920)
