@@ -22,6 +22,9 @@ A **COOL** TOOL to make `YouTube Shorts` by harnessing the power of
     
     [![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCHlX9uCrRPoY9IryUfdmlOQ?style=for-the-badge&label=Subscribers&color=red&logo=youtube)](https://www.youtube.com/channel/UCHlX9uCrRPoY9IryUfdmlOQ)
 
+# Future Ideas
+### Making this a cool library 🚀
+
 # Gallery
 ![](gallery/1.png)
 
