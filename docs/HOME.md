@@ -2,7 +2,7 @@
 
 - ## 🧑‍🤝‍🧑 Clone this repo first
     ```
-    git clone https://github.com/pro-grammer-SD/Auto-YT-Shorts.git
+    git clone https://github.com/programmersd/Auto-YT-Shorts.git
     cd Auto-YT-Shorts
     ```
 

@@ -31,4 +31,4 @@ A **COOL** TOOL to make `YouTube Shorts` by harnessing the power of
 ![](gallery/2.png)
 
 # 📃 Docs
-Can be found at [here](https://github.com/pro-grammer-SD/Auto-YT-Shorts/wiki/)
+Can be found at [here](https://github.com/programmersd/Auto-YT-Shorts/wiki/)
